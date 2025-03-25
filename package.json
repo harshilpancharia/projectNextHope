@@ -8,5 +8,25 @@
     "express-fileupload": "^1.5.1",
     "mysql2": "^3.12.0",
     "nodemon": "^3.1.9"
-  }
+  },
+  "name": "nexthope_site",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harshilpancharia/projectFirstHand.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harshilpancharia/projectFirstHand/issues"
+  },
+  "homepage": "https://github.com/harshilpancharia/projectFirstHand#readme",
+  "description": ""
 }
