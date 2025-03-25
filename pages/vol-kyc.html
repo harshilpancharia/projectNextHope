@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer KYC - NextHope</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .fetchstatus{
+            color: blue;
+        }
+        .registerstatus{
+            color: blue;
+        }
+        .imageprev{
+            width: 150px;
+            height: auto;
+        }
+    </style>
+    <script>
+    function ShowPrev(FileUpload,prev)
+    {
+        document.getElementById(prev).src = window.URL.createObjectURL(FileUpload.files[0]);
+    }
+
+
+
+        $(document).ready(function(){
+            // Fetch Button - fetches all information related to the email and inputs into the fields
+            $("#fetchBtn").click(function(response){
+                let obj = {
+                    method:"POST",
+                    url:"/volkyc-fetch",
+                    data:{
+                        userkycEmail:$("#userkycEmail").val()
+                    }
+                }
+                $.ajax(obj).then(function(responseArray){
+                    $("#fetchstatus").html("Processing...")
+                    if(responseArray.length==0){
+                        $("#fetchstatus").html("Invalid Email ID")
+                    }
+                    else{
+                        let dt = responseArray[0];
+                        $("#userkycName").val(dt.fullname);
+                        $("#userkycContact").val(dt.contact);
+                        $("#userkycAddress").val(dt.address);
+                        $("#userkycCity").val(dt.city);
+                        $("#userkycGender").val(dt.gender);
+                        $("#userkycDob").val(dt.dob.substr(0,10));
+                        $("#userkycQual").val(dt.quali);
+                        $("#userkycOccupation").val(dt.occu);
+                        $("#userkycOinfo").val(dt.info);
+                        $("#userkycPpic").prop("src",dt.picpath);
+                        $("#userkycIDproof").prop("src",dt.idpath);
+                       
+                        $("#fetchstatus").html("Data Fetched!")
+
+                    }
+                }).fail(function(error){
+                    $("#fetchstatus").html("Error: "+JSON.stringify(error))
+                })
+            })
+            // VOLUNTEER KYC FORM EMAIL VALIDATION ON BLUR
+            $("#userkycEmail").blur(function(response){
+                let obj={
+                    method:"POST",
+                    url:"/volkyc-email-check",
+                    data:{userkycEmail:$("#userkycEmail").val()}
+                }
+                $.ajax(obj).then(function(response){
+                    $("#volkycemailcheck").html(response)
+                }).fail(function(error){("#volkycemailcheck").html(error)})
+            })
+            // VOLUNTEER KYC FORM REGISTER
+            $("#registerBtn").click(function (response) {
+                $("#registerstatus").html("Processing...")
+                let formData = new FormData();
+                formData.append("userkycEmail", $("#userkycEmail").val());
+                formData.append("userkycName", $("#userkycName").val());
+                formData.append("userkycContact", $("#userkycContact").val());
+                formData.append("userkycAddress", $("#userkycAddress").val());
+                formData.append("userkycCity", $("#userkycCity").val());
+                formData.append("userkycGender", $("#userkycGender").val());
+                formData.append("userkycDob", $("#userkycDob").val());
+                formData.append("userkycQual", $("#userkycQual").val());
+                formData.append("userkycOccupation", $("#userkycOccupation").val());
+                formData.append("userkycOinfo", $("#userkycOInfo").val());
+                formData.append("userkycPpic", $("#userkycPpic")[0].files[0]);
+                formData.append("userkycIDproof", $("#userkycIDproof")[0].files[0]);
+
+                let obj = {
+                    method: "post",
+                    url: "/volkyc-register",
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                }
+                $.ajax(obj).then(function (response) {
+                    $("#registerstatus").html(response)
+                }).fail(function (error) {
+                    $("#registerstatus").html(error)
+                })
+            })
+
+            // Update KYC
+            $("#updateBtn").click(function (response) {
+                $("#registerstatus").html("Processing...")
+                let formData = new FormData();
+                formData.append("userkycEmail", $("#userkycEmail").val());
+                formData.append("userkycName", $("#userkycName").val());
+                formData.append("userkycContact", $("#userkycContact").val());
+                formData.append("userkycAddress", $("#userkycAddress").val());
+                formData.append("userkycCity", $("#userkycCity").val());
+                formData.append("userkycGender", $("#userkycGender").val());
+                formData.append("userkycDob", $("#userkycDob").val());
+                formData.append("userkycQual", $("#userkycQual").val());
+                formData.append("userkycOccupation", $("#userkycOccupation").val());
+                formData.append("userkycOinfo", $("#userkycOInfo").val());
+                formData.append("userkycPpic", $("#userkycPpic")[0].files[0]);
+                formData.append("userkycIDproof", $("#userkycIDproof")[0].files[0]);
+
+                let obj = {
+                    method: "post",
+                    url: "/volkyc-update",
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                }
+                $.ajax(obj).then(function (response) {
+                    $("#registerstatus").html(response)
+                }).fail(function (error) {
+                    $("#registerstatus").html(error)
+                })
+            })
+            
+        })
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Volunteer KYC Form</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div id="mainpanel" class="row">
+                <div id="leftpanel" class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Profile Pic</label>
+                        <img class="imageprev form-control" id="ppicprev" src="">
+                        <input type="file" class="form-control" id="userkycPpic" name="userkycPpic" onchange="ShowPrev(this,'ppicprev');">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Identity Proof</label>
+                        <img class="imageprev form-control" id="idprev" src="">
+                        <input type="file" class="form-control" id="userkycIDproof" name="userkycIDproof" onchange="ShowPrev(this,'idprev');">
+                    </div>
+                </div>
+                
+                <div id="rightpanel" class="col-md-7">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Email ID</label>
+                            <div class="col-md-6">
+                                <p id="volkycemailcheck"></p>
+                            </div>
+                            <input type="email" class="form-control" id="userkycEmail" name="userkycEmail">
+                            <p class="fetchstatus" id="fetchstatus"></p>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <input type="button" class="btn btn-primary" value="Fetch Details" id="fetchBtn">
+                        </div>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="userkycName" name="userkycName">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact No.</label>
+                            <input type="text" class="form-control" id="userkycContact" name="userkycContact">
+                        </div>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea class="form-control" id="userkycAddress" name="userkycAddress"></textarea>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" id="userkycCity" name="userkycCity">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender</label>
+                            <select class="form-select" id="userkycGender" name="userkycGender">
+                                <option value="Select">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="userkycDob" name="userkycDob">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Qualification</label>
+                            <select class="form-select" id="userkycQual" name="userkycQual">
+                                <option value="Select">Select</option>
+                                <option value="Post-Graduate">Post Graduate</option>
+                                <option value="Graduate">Graduate</option>
+                                <option value="10+2">10+2</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Occupation</label>
+                            <select class="form-select" id="userkycOccupation" name="userkycOccupation">
+                                <option value="Select">Select</option>
+                                <option value="Student">Student</option>
+                                <option value="Employee">Employee</option>
+                                <option value="Self-Employed">Self-Employed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Other Information</label>
+                            <input type="text" class="form-control" id="userkycOinfo">
+                        </div>
+                    </div>
+    
+                    <div class="d-flex justify-content-between">
+                        <input type="button" class="btn btn-success" id="registerBtn" value="Register">
+                        <input type="button" class="btn btn-warning" id="updateBtn" value="Update">
+                    </div>
+                    <div>
+                        <p id="registerstatus" class="registerstatus"></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
