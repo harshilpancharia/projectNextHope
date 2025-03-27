@@ -21,19 +21,26 @@
     </script>
     <style>
         .card-img-top {
-            display: block;
-            margin: 0 auto;
+            display: flex;
+            align-content: center;
+            margin: 5px auto;
+            margin-top: 10px;
             max-width: 100%;
             height: auto;
+        }
+        .card{
+            width: 18rem;
+            height: auto;
+            object-fit: contain;
         }
     </style>
 </head>
 <body onload="init()">
     <p><b>Welcome volunteer :</b></p>
     <span id="user"></span>
-    <div class="container mt-5">
-        <div class="row justify-content-center g-4">
-            <div class="col-md-6 d-flex justify-content-center">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md-3">
                 <div class="card" style="width: 18rem;">
                     <img class="card-img-top" src="/kyc.jpg" alt="kyc-image" style="height: auto; width: 185px;">
                     <div class="card-body">
@@ -43,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 d-flex justify-content-center">
+            <div class="col-md-3">
                 <div class="card" style="width: 18rem;">
                     <img class="card-img-top" src="/work.png" alt="kyc-image" style="align-items: center; height: 100px; width: 100px;">
                     <div class="card-body">
@@ -53,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 d-flex justify-content-center">
+            <div class="col-md-3 ">
                 <div class="card" style="width: 18rem;">
                     <img class="card-img-top" src="/logout.png" alt="kyc-image" style="height: auto; width: 185px;">
                     <div class="card-body">

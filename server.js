@@ -5,8 +5,11 @@ var fileUploader =require("express-fileupload");
 var app=express();
 var bodyparser = require('body-parser');
 var cookieParser = require("cookie-parser")
-require("dotenv").config()
-
+// require("dotenv").config()
+// var credentials = require("./credentials")
+// import credentials from "./credentials.js";
+var dotenv = require("dotenv")
+dotenv.config()
 
 //Saving cloudinary information
 cloudinary.config({ 
@@ -73,11 +76,11 @@ app.get("/",function(req,resp){
     })
 
 // Redirected to unauthorised page if no permission found 
-// app.get("/unauthorised",function(req,resp){
-//     let dirName=__dirname;
-//     let indexfile=dirName+"/pages/unauth.html";
-//     resp.sendFile(indexfile);
-// })
+app.get("/unauthorised",function(req,resp){
+    let dirName=__dirname;
+    let indexfile=dirName+"/pages/unauth.html";
+    resp.sendFile(indexfile);
+})
 
 
 // Save sign up information--> requires duplicacy handling
@@ -878,10 +881,11 @@ app.get("/all-records-client-title", function (req, resp) {
 })
 
 app.get("/all-filtered-city",function(req,resp){
-    mysqlserver.query("select * from jobs where city=?",[req.query.filtercity],function(err,res){
+    userselection=req.query.filtercity
+    mysqlserver.query("select * from jobs where city=?",[userselection],function(err,res){
         if(!err){
-        console.log(err+"error")
-        console.log(res+"result")
+        // console.log(err+"error")
+        // console.log(res+"result")
         resp.send(res)}
         else{
             console.log(err)
