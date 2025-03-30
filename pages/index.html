@@ -79,7 +79,8 @@
                   window.location.href = "/admin-panel-page";
                 }
                 else{
-                alert(response);
+                // alert(response);
+                console.log(response)
                 }
               }
             }
@@ -94,36 +95,103 @@
       
     </script>
     <style>
-      .img2 {
-        margin-top: 5px;
-        height: 250px;
-        width: 250px;
+      /* Base styles with smooth transitions */
+      * {
+        transition: all 0.3s ease;
       }
     
-      .img3 {
-        margin-top: 5px;
-        height: 150px;
-        width: 150px;
+      body {
+        background: linear-gradient(135deg, #6dd5ed, #2193b0);
+        background-image: url("bodybg2.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        scroll-behavior: smooth;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        color: #333;
       }
     
-      .whitebg {
-        background-color: white;
+      /* Improved navbar with glass morphism effect */
+      .navbarbg {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
       }
     
       .logowithname {
-        border: 10px;
         border-radius: 50px;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        display: flex;
+        align-items: center;
       }
     
+      .logowithname .navbar-brand {
+        font-weight: 600;
+        color: #2193b0;
+        font-size: 1.5rem;
+      }
+    
+      .logowithname img {
+        height: 50px;
+        width: 50px;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+      }
+    
+      .logowithname:hover img {
+        transform: rotate(15deg);
+      }
+    
+      /* Enhanced buttons */
+      .btn {
+        margin: 5px;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+    
+      .btn-primary {
+        background-color: #2193b0;
+        border-color: #2193b0;
+      }
+    
+      .btn-primary:hover {
+        background-color: #187b95;
+        border-color: #187b95;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+    
+      .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
+    
+      .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+    
+      /* Carousel enhancements */
       #carouselExampleIndicators {
-        height: 60vh;
+        height: 80vh;
         width: 100%;
+        overflow: hidden;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       }
     
       .carousel-inner {
-        height: 60vh;
-        object-fit: cover;
+        height: 80vh;
+        object-fit: fill;
       }
     
       .carousel-item::before {
@@ -147,116 +215,198 @@
         height: 100%;
         width: 100%;
         object-fit: cover;
-        /* Ensures the image fills the space properly */
+        transition: transform 0.5s ease;
       }
     
-      .navbarbg {
-        background-image: url("bodybg2.png");
-        background-repeat: round;
+      .carousel-item:hover img {
+        transform: scale(1.05);
       }
     
-      body {
-        background: linear-gradient(135deg, #6dd5ed, #2193b0);
-        /* min-height: 100vh; */
-        background-image: url("bodybg2.png");
-        background-repeat: no-repeat;
-        background-size: cover;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      .carousel-control-prev, .carousel-control-next {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
       }
     
-      .btn {
-        margin: 5px;
+      .carousel-control-prev:hover, .carousel-control-next:hover {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
       }
     
-      .divclass {
-        margin: 5px;
+      /* Section headers */
+      .bg-dark {
+        background-color: rgba(33, 37, 41, 0.9) !important;
+        backdrop-filter: blur(5px);
+        padding: 15px 0 !important;
+        margin: 30px 0;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
     
-      .dropdown {
-        margin: 10px;
+      .bg-dark h2 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 1px;
       }
     
-      .form-check {
-        margin-top: 10px;
-      }
-    
-      .dropdown1 {
-        padding: 3px;
-      }
-    
-      .sgnresult {
-        color: green;
-      }
-    
-      .sgnerror {
-        color: brown;
-      }
-    
-      .sgncheck {
-        color: black;
-      }
-    
-      .carousel {
-        /* width: 400px; */
-        position: relative;
-        overflow: hidden;
-      }
-    
-      .prev {
-        left: 10px;
-      }
-    
-      .next {
-        right: 10px;
-      }
-    
-      .curve {
-        border: 2px;
-        border-color: black;
-        border-radius: 40px;
-        width: 60vh;
-        height: 50vh;
-      }
-    
-      .divalign {
-        align-content: center;
-      }
-    
+      /* Card enhancements */
       .card {
         display: flex;
         flex-direction: column;
         height: 100%;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+      }
+    
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       }
     
       .card-body {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        padding: 20px;
       }
     
-      .row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: stretch;
+      .card-title {
+        font-weight: 600;
+        color: #2193b0;
+        margin-bottom: 15px;
       }
     
-      .col-md-6,
-      .col-md-3 {
-        display: flex;
+      .card p {
+        color: #555;
+        flex-grow: 1;
       }
     
-      .card-img-top {
-        height: 150px;
+      /* Image styles */
+      .img2 {
+        margin-top: 20px;
+        height: 200px;
+        width: 200px;
         object-fit: contain;
+        transition: transform 0.3s ease;
       }
-      .gmap{
+    
+      .img3 {
+        margin-top: 20px;
+        height: 120px;
+        width: 120px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+    
+      .card:hover .img2, .card:hover .img3 {
+        transform: scale(1.1);
+      }
+    
+      .whitebg {
+        background-color: white;
+        padding: 10px;
+        border-radius: 10px;
+      }
+    
+      /* Form elements */
+      .form-check {
+        margin-top: 10px;
+      }
+    
+      /* Result messages */
+      .sgnresult {
+        color: #28a745;
+        font-weight: 500;
+      }
+    
+      .sgnerror {
+        color: #dc3545;
+        font-weight: 500;
+      }
+    
+      .sgncheck {
+        color: #333;
+      }
+    
+      /* Map container */
+      .gmap {
         object-fit: fill;
         display: flex;
         max-width: 100%;
         justify-content: center;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        margin: 20px 0;
       }
-
+    
+      .gmap iframe {
+        border: none;
+        width: 100%;
+        height: 400px;
+      }
+    
+      /* Footer */
+      footer {
+        background-color: rgba(33, 37, 41, 0.95) !important;
+        backdrop-filter: blur(5px);
+        padding: 30px 0;
+        margin-top: 50px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+      }
+    
+      footer p {
+        margin: 5px 0;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        #carouselExampleIndicators, .carousel-inner, .carousel-item {
+          height: 60vh;
+        }
+        
+        .img2 {
+          height: 150px;
+          width: 150px;
+        }
+        
+        .img3 {
+          height: 100px;
+          width: 100px;
+        }
+      }
+    
+      /* Animation for cards when they come into view */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    
+      .row > div {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+      }
+    
+      .row > div:nth-child(1) { animation-delay: 0.1s; }
+      .row > div:nth-child(2) { animation-delay: 0.2s; }
+      .row > div:nth-child(3) { animation-delay: 0.3s; }
+      .row > div:nth-child(4) { animation-delay: 0.4s; }
     </style>
     </head>
     
@@ -462,7 +612,7 @@
         <div class="col-md-3 mb-4">
           <div class="card">
             <center>
-              <img class="card-img-top img3" src="connectc.png" alt="signup">
+              <img class="card-img-top img3" src="harshil.jpg" alt="signup">
             </center>
             <div class="card-body">
               <h5 class="card-title">Harshil Pancharia</h5>
@@ -478,7 +628,7 @@
         <div class="col-md-3 mb-4">
           <div class="card">
             <center>
-              <img class="card-img-top img3" src="connectc.png" alt="signup">
+              <img class="card-img-top img3" src="rajeshbansal.jpg" alt="signup">
             </center>
             <div class="card-body">
               <h5 class="card-title">Mr. Rajesh Bansal</h5>
@@ -497,12 +647,12 @@
       </div>
       <div class="text-center gmap container-fluid">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3447.8807340399444!2d74.94974781159463!3d30.21195127473461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391732a4f07278a9%3A0x4a0d6293513f98ce!2sBanglore%20Computer%20Education!5e0!3m2!1sen!2sin!4v1742941731874!5m2!1sen!2sin"
-       width="700" height="500" 
+       width="700" height="300" 
       style="border:0; width: 100%; height: auto;" allowfullscreen="true" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       </div>
       <footer class="bg-dark text-white text-center py-4">
-        <p>Copyright</p>
+        <p>Copyright - <a href="https://www.instagram.com/k1ttu_">Harshil Pancharia</a></p>
         <p>Follow us!</p>
       </footer>
     <form method="get">

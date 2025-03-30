@@ -5,9 +5,6 @@ var fileUploader =require("express-fileupload");
 var app=express();
 var bodyparser = require('body-parser');
 var cookieParser = require("cookie-parser")
-// require("dotenv").config()
-// var credentials = require("./credentials")
-// import credentials from "./credentials.js";
 var dotenv = require("dotenv")
 dotenv.config()
 
@@ -15,7 +12,7 @@ dotenv.config()
 cloudinary.config({ 
     cloud_name: process.env.cloud_name, 
     api_key: process.env.api_key, 
-    api_secret: process.env.api_secret // Click 'View API Keys' above to copy your API secret
+    api_secret: process.env.api_secret 
 });
 
 
@@ -812,6 +809,13 @@ app.get("/find-work-page",function(req,resp){
     resp.sendFile(fullpath)
 })
 
+// chat bot page - client
+app.get("/chatbot-client",function(req,resp){
+    let dirName = __dirname
+    let fullpath = __dirname+"/pages/chatbot.html"
+    resp.sendFile(fullpath)
+})
+
 // Angular --> volunteer manager
 app.get("/vol-manage",function(req,resp){
     mysqlserver.query("select * from volkyc",function(err,response){
@@ -839,17 +843,100 @@ app.get("/clients-manage",function(req,resp){
 })
 
 // Angular Job Manager
-app.get("/cltjob-manage",function(req,resp){
-    mysqlserver.query("select * from jobs",function(err,response){
-        if(!err){
-            resp.send(response)
+// app.get("/cltjob-manage",function(req,resp){
+//     mysqlserver.query("select * from jobs",function(err,response){
+//         if(!err){
+//             resp.send(response)
 
+//         }
+//         else{
+//             resp.send(err)
+//         }
+//     })
+// })
+
+// Get jobs for current client using cprofile table
+app.get("/api/my-jobs", function(req, res) {
+    const userEmail = req.query.email;
+    
+    if (!userEmail) {
+        return res.status(400).json({ error: "Email parameter is required" });
+    }
+
+    // First get client info from cprofile table
+    const getClientQuery = "SELECT email FROM cprofile WHERE email = ?";
+    
+    mysqlserver.query(getClientQuery, [userEmail], function(err, clientResult) {
+        if (err) {
+            console.error("Database error (cprofile lookup):", err);
+            return res.status(500).json({ 
+                error: "Database error",
+                details: err.message 
+            });
         }
-        else{
-            resp.send(err)
+        
+        if (clientResult.length === 0) {
+            return res.status(404).json({ error: "Client not found in cprofile" });
         }
-    })
-})
+        
+        // Now get jobs for this client
+        // Assuming jobs.cid matches cprofile.email
+        const getJobsQuery = "SELECT * FROM jobs WHERE cid = ? ORDER BY jobid DESC";
+        
+        mysqlserver.query(getJobsQuery, [userEmail], function(err, jobs) {
+            if (err) {
+                console.error("Database error (jobs lookup):", err);
+                return res.status(500).json({ 
+                    error: "Database error",
+                    details: err.message 
+                });
+            }
+            
+            res.json(jobs);
+        });
+    });
+});
+
+// Delete job endpoint (updated to use cprofile)
+app.delete("/api/jobs/:jobId", function(req, res) {
+    const jobId = req.params.jobId;
+    const userEmail = req.query.email;
+    
+    if (!userEmail) {
+        return res.status(401).json({ error: "Email parameter required" });
+    }
+
+    // Verify job belongs to user by checking cprofile
+    const verifyQuery = `
+        SELECT j.jobid 
+        FROM jobs j
+        WHERE j.jobid = ? 
+        AND j.cid = ?
+    `;
+    
+    mysqlserver.query(verifyQuery, [jobId, userEmail], function(err, result) {
+        if (err) {
+            console.error("Database error (verification):", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Job not found or not authorized" });
+        }
+        
+        // Delete the job
+        const deleteQuery = "DELETE FROM jobs WHERE jobid = ?";
+        
+        mysqlserver.query(deleteQuery, [jobId], function(err, deleteResult) {
+            if (err) {
+                console.error("Database error (deletion):", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+            
+            res.json({ success: true });
+        });
+    });
+});
 //Angular Find Work
 app.get("/find-work-bck",function(req,resp){
     // console.log(req.session)
@@ -869,27 +956,168 @@ app.get("/find-work-bck",function(req,resp){
 
 //------------access all cities of client post---angular find work
 app.get("/all-records-client-city", function (req, resp) {
-    mysqlserver.query("select distinct city from jobs ", function (err, result) {
+    mysqlserver.query("select distinct city from jobs order by city", function (err, result) {
+        if(!err){
         resp.send(result);
+        }
+        else{
+            console.log(err)
+            resp.send(err)
+        }
     })
 })
 //-----------access all job titles of client post---angular find work
 app.get("/all-records-client-title", function (req, resp) {
     mysqlserver.query("select distinct jobtitle from jobs ", function (err, result) {
-        resp.send(result);
-    })
-})
-
-app.get("/all-filtered-city",function(req,resp){
-    userselection=req.query.filtercity
-    mysqlserver.query("select * from jobs where city=?",[userselection],function(err,res){
-        if(!err){
-        // console.log(err+"error")
-        // console.log(res+"result")
-        resp.send(res)}
-        else{
+        if(err){
             console.log(err)
+            resp.send(err+'database error')
         }
-
+        else{
+        resp.send(result);
+        }
     })
 })
+
+app.get("/all-filtered", function (req, resp) {
+    let city = req.query.city || "";
+    let title = req.query.title || "";
+
+    let query = "SELECT * FROM jobs WHERE 1=1"; // Always true
+    let values = [];
+
+    if (city) {
+        query += " AND city = ?";
+        values.push(city);
+    }
+    if (title) {
+        query += " AND jobtitle = ?";
+        values.push(title);
+    }
+
+    mysqlserver.query(query, values, function (err, result) {
+        if (!err) {
+            resp.send(result);
+        } else {
+            console.log(err);
+            resp.status(500).send("Database error");
+        }
+    });
+});
+
+// Get all users
+app.get('/api/users', (req, res) => {
+    const query = 'SELECT email, usertype, status FROM UserSignUp';
+    mysqlserver.query(query, (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
+    });
+});
+
+// Add new user
+app.post('/api/users', (req, res) => {
+    const { email, pass, usertype, status } = req.body;
+    const query = 'INSERT INTO UserSignUp (email, pass, usertype, status) VALUES (?, ?, ?, ?)';
+    
+    mysqlserver.query(query, [email, pass, usertype, status || 0], (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Block user
+app.put('/api/users/:email/block', (req, res) => {
+    const email = req.params.email;
+    const query = 'UPDATE UserSignUp SET status = 1 WHERE email = ?';
+    
+    mysqlserver.query(query, [email], (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Unblock user
+app.put('/api/users/:email/unblock', (req, res) => {
+    const email = req.params.email;
+    const query = 'UPDATE UserSignUp SET status = 0 WHERE email = ?';
+    
+    mysqlserver.query(query, [email], (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Delete user
+app.delete('/api/users/:email', (req, res) => {
+    const email = req.params.email;
+    const query = 'DELETE FROM UserSignUp WHERE email = ?';
+    
+    mysqlserver.query(query, [email], (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Delete volunteer endpoint
+app.delete("/api/volunteers/:email", function(req, res) {
+    const email = req.params.email;
+    
+    // First verify admin privileges (add your admin verification logic here)
+    
+    const deleteQuery = "DELETE FROM volunteers WHERE emailid = ?";
+    
+    mysqlserver.query(deleteQuery, [email], function(err, result) {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Volunteer not found" });
+        }
+        
+        res.json({ success: true });
+    });
+});
+
+// Delete client endpoint
+app.delete("/api/clients/:email", function(req, res) {
+    const email = req.params.email;
+    
+    // First verify admin privileges (add your admin verification logic here)
+    
+    const deleteQuery = "DELETE FROM cprofile WHERE email = ?";
+    
+    mysqlserver.query(deleteQuery, [email], function(err, result) {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Client not found" });
+        }
+        
+        // Optionally delete associated jobs
+        mysqlserver.query("DELETE FROM jobs WHERE cid = ?", [email], function(err) {
+            if (err) console.error("Error deleting associated jobs:", err);
+            
+            res.json({ success: true });
+        });
+    });
+});

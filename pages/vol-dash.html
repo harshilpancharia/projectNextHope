@@ -36,37 +36,38 @@
     </style>
 </head>
 <body onload="init()">
-    <p><b>Welcome volunteer :</b></p>
-    <span id="user"></span>
-    <div class="container">
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="/kyc.jpg" alt="kyc-image" style="height: auto; width: 185px;">
+    <div class="container mt-4">
+        <div class="alert alert-primary text-center" role="alert">
+            <b>Welcome, Volunteer:</b> <span id="user"></span>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-lg text-center">
+                    <img class="card-img-top mx-auto mt-3" src="/kyc.jpg" alt="KYC Image" style="height: auto; width: 60%;">
                     <div class="card-body">
                         <h5 class="card-title">Volunteer KYC</h5>
                         <p class="card-text">Every volunteer must complete their KYC registration before proceeding.</p>
-                        <a href="/vol-kyc" class="btn btn-primary">Complete KYC</a>
+                        <a href="/vol-kyc" class="btn btn-primary w-100">Complete KYC</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="/work.png" alt="kyc-image" style="align-items: center; height: 100px; width: 100px;">
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-lg text-center">
+                    <img class="card-img-top mx-auto mt-3" src="/work.png" alt="Find Work Image" style="height: 100px; width: 100px;">
                     <div class="card-body">
                         <h5 class="card-title">Find Work</h5>
                         <p class="card-text">Find work for the beggars around you.</p>
-                        <a href="/find-work-page" class="btn btn-primary">Search Jobs</a>
+                        <a href="/find-work-page" class="btn btn-primary w-100">Search Jobs</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 ">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" src="/logout.png" alt="kyc-image" style="height: auto; width: 185px;">
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded-lg text-center">
+                    <img class="card-img-top mx-auto mt-3" src="/logout.png" alt="Logout Image" style="height: auto; width: 60%;">
                     <div class="card-body">
                         <h5 class="card-title">Session</h5>
                         <p class="card-text">Logout of the profile.</p>
-                        <input type="button" class="btn btn-warning" value="Log Out" onclick="doLogout()">
+                        <input type="button" class="btn btn-warning w-100" value="Log Out" onclick="doLogout()">
                     </div>
                 </div>
             </div>
@@ -74,4 +75,5 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+
 </html>
