@@ -221,7 +221,7 @@
                         $scope.loadVolunteers();
                     })
                     .catch(function(error) {
-                        alert('Error deleting volunteer: ' + error.data);
+                        alert('Error deleting volunteer: ' + JSON.stringify(error.data));
                     });
                 }
             };

@@ -191,7 +191,7 @@ app.post("/volkyc-fetch",function(req,resp){
     else{
         mysqlserver.query("select * from volkyc where emailid=? ",[userkycEmail],function(err,res){
             // console.log(res)
-            if(res.length===0){
+            if(res.length==0){
                 resp.send("KYC Pending...")
             }
             else{
@@ -266,7 +266,7 @@ app.post("/volkyc-register", async function (req, resp) {
                             {
                                 fileNamePpic = req.files.userkycPpic.name;
                                 let locationToSavePpic = __dirname + "/public/uploads/" + fileNamePpic;//full ile path
-                                req.files.userkycPpic.mv(locationToSavePpic);//saving file in uploads folder
+                                await req.files.userkycPpic.mv(locationToSavePpic);//saving file in uploads folder
                     
                                 //saving ur file/pic on cloudinary server
                                 await cloudinary.uploader.upload(locationToSavePpic).then(function (picUrlResultPpic) {
@@ -275,7 +275,7 @@ app.post("/volkyc-register", async function (req, resp) {
                                 });
                                 fileNameID = req.files.userkycIDproof.name;
                                 let locationToSaveID = __dirname + "/public/uploads/" + fileNameID;//full ile path
-                                req.files.userkycIDproof.mv(locationToSaveID);//saving file in uploads folder
+                                await req.files.userkycIDproof.mv(locationToSaveID);//saving file in uploads folder
                                 
                                 // 2 second delay for the next upload
                                 await new Promise(resolve => setTimeout(resolve, 2000)); 
@@ -1079,7 +1079,8 @@ app.delete("/api/volunteers/:email", function(req, res) {
     
     // First verify admin privileges (add your admin verification logic here)
     
-    const deleteQuery = "DELETE FROM volunteers WHERE emailid = ?";
+    const deleteQuery = "DELETE FROM UserSignUp WHERE email = ?";
+    const deleteQuery2 = "DELETE FROM volkyc WHERE emailid = ?";
     
     mysqlserver.query(deleteQuery, [email], function(err, result) {
         if (err) {
@@ -1092,6 +1093,7 @@ app.delete("/api/volunteers/:email", function(req, res) {
         }
         
         res.json({ success: true });
+        mysqlserver.query(deleteQuery2, [email], function(err, res1) {if(err){console.log(err)}else{console.log("sucess"+res1)}})
     });
 });
 
@@ -1121,3 +1123,16 @@ app.delete("/api/clients/:email", function(req, res) {
         });
     });
 });
+
+// Post Job Total Job number
+app.post("/client/emailstatus",function(req,resp){
+    clientid = req.body.clientid;
+    mysqlserver.query("SELECT COUNT(*) AS total FROM jobs WHERE cid = ?",[clientid],function(err,res){
+        if(err){
+            resp.send("Error! "+err)
+        }
+        else{
+            resp.send("Total jobs posted: "+res[0].total)
+        }
+    })
+})

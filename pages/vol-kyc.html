@@ -28,6 +28,9 @@
 
         $(document).ready(function(){
             // Fetch Button - fetches all information related to the email and inputs into the fields
+            Currentuser=localStorage.getItem('activeUser')
+            $("#userkycEmail").val(Currentuser)
+
             $("#fetchBtn").click(function(response){
                 let obj = {
                     method:"POST",
@@ -48,12 +51,12 @@
                         $("#userkycAddress").val(dt.address);
                         $("#userkycCity").val(dt.city);
                         $("#userkycGender").val(dt.gender);
-                        $("#userkycDob").val(dt.dob.substr(0,10));
+                        $("#userkycDob").val(dt.dob ? dt.dob.substr(0, 10) : "");
                         $("#userkycQual").val(dt.quali);
                         $("#userkycOccupation").val(dt.occu);
                         $("#userkycOinfo").val(dt.info);
-                        $("#userkycPpic").prop("src",dt.picpath);
-                        $("#userkycIDproof").prop("src",dt.idpath);
+                        $("#Ppicprev").prop("src",dt.picpath);
+                        $("#IDprev").prop("src",dt.idpath);
                        
                         $("#fetchstatus").html("Data Fetched!")
 
@@ -163,7 +166,7 @@
                             <div class="col-md-6">
                                 <p id="volkycemailcheck"></p>
                             </div>
-                            <input type="email" class="form-control" id="userkycEmail" name="userkycEmail">
+                            <input type="email" class="form-control" id="userkycEmail" name="userkycEmail" disabled>
                             <p class="fetchstatus" id="fetchstatus"></p>
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
