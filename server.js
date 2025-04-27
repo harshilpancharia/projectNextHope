@@ -184,26 +184,20 @@ app.get("/index",function(req,resp){
 
 // Fetch Button - fetches all information related to the email and inputs into the fields
 app.post("/volkyc-fetch",function(req,resp){
-    let userkycEmail = req.body.userkycEmail
-    if(!userkycEmail){
-        resp.send("Enter Valid Email")
-    }
-    else{
-        mysqlserver.query("select * from volkyc where emailid=? ",[userkycEmail],function(err,res){
-            // console.log(res)
-            if(res.length==0){
-                resp.send("KYC Pending...")
+    let userkycEmail = req.body.userkycEmail;
+    if (!userkycEmail) {
+        resp.send([]);
+    } else {
+        mysqlserver.query("SELECT * FROM volkyc WHERE emailid = ?", [userkycEmail], function(err, res) {
+            if (err) {
+                console.log("Database error:", err);
+                resp.send([]); 
+            } else {
+                resp.send(res); 
             }
-            else{
-                if(err){
-                    resp.send("Error! while fetching your data!")
-                }
-                else{
-                resp.send(res)}
-            }
-        })
+        });
     }
-})
+});
 // volunteer dashboard page
 app.get("/vol-dash",function(req,resp){
     let dirName = __dirname

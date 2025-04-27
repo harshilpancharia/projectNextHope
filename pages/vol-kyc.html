@@ -39,30 +39,39 @@
                         userkycEmail:$("#userkycEmail").val()
                     }
                 }
-                $.ajax(obj).then(function(responseArray){
-                    $("#fetchstatus").html("Processing...")
-                    if(responseArray.length==0){
-                        $("#fetchstatus").html("Invalid Email ID")
+                $.ajax(obj).then(function (responseArray) {
+                    console.log("Raw response:", responseArray)
+                    if (!Array.isArray(responseArray)) {
+                        responseArray = [];
                     }
-                    else{
-                        let dt = responseArray[0];
-                        $("#userkycName").val(dt.fullname);
-                        $("#userkycContact").val(dt.contact);
-                        $("#userkycAddress").val(dt.address);
-                        $("#userkycCity").val(dt.city);
-                        $("#userkycGender").val(dt.gender);
-                        $("#userkycDob").val(dt.dob ? dt.dob.substr(0, 10) : "");
-                        $("#userkycQual").val(dt.quali);
-                        $("#userkycOccupation").val(dt.occu);
-                        $("#userkycOinfo").val(dt.info);
-                        $("#Ppicprev").prop("src",dt.picpath);
-                        $("#IDprev").prop("src",dt.idpath);
-                       
-                        $("#fetchstatus").html("Data Fetched!")
 
+                    $("#fetchstatus").html("Processing...");
+
+                    if (responseArray.length === 0) {
+                        $("#fetchstatus").html("No KYC data found - please complete your registration");
+                        // Optionally clear all fields
+                        $("#userkycName, #userkycContact, #userkycAddress, #userkycCity").val("");
+                        // ... clear other fields
+                        return;
                     }
-                }).fail(function(error){
-                    $("#fetchstatus").html("Error: "+JSON.stringify(error))
+                    let dt = responseArray[0];
+                    $("#userkycName").val(dt.fullname);
+                    $("#userkycContact").val(dt.contact);
+                    $("#userkycAddress").val(dt.address);
+                    $("#userkycCity").val(dt.city);
+                    $("#userkycGender").val(dt.gender);
+                    $("#userkycDob").val(dt.dob ? dt.dob.substr(0, 10) : "");
+                    $("#userkycQual").val(dt.quali);
+                    $("#userkycOccupation").val(dt.occu);
+                    $("#userkycOinfo").val(dt.info);
+                    $("#Ppicprev").prop("src", dt.picpath);
+                    $("#IDprev").prop("src", dt.idpath);
+
+                    $("#fetchstatus").html("Data Fetched!")
+
+                }
+                ).fail(function (error) {
+                    $("#fetchstatus").html("Error: " + JSON.stringify(error))
                 })
             })
             // VOLUNTEER KYC FORM EMAIL VALIDATION ON BLUR
